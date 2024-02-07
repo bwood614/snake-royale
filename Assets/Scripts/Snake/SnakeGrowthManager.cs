@@ -20,8 +20,10 @@ public class SnakeGrowthManager : MonoBehaviour
     float damageCooldownTimer = 0;
     float damageCooldown = 2f;
 
-    float markerFrequency = .02f;
-    float markerTimer;
+    float markerDropDistance = .5f;
+    float distanceSinceLastMarker;
+
+    float snakeMoveSpeed;
 
     void Start()
     {
@@ -29,20 +31,19 @@ public class SnakeGrowthManager : MonoBehaviour
 
         gameObject.GetComponent<MarkerManager>().SetMaxMarkerCount(maxMarkersPerSegment);
         bodySegments.Add(gameObject);
-        for (int i = 1; i <=3; i++) {
+        for (int i = 1; i <=5; i++) {
             IncreaseLength();
         }
 
         GameObject nuggetManagerObj = GameObject.FindGameObjectWithTag("Nugget Manager");
         nuggetManager =  nuggetManagerObj.GetComponent<NuggetManager>();
 
-        markerTimer = 0;
+        distanceSinceLastMarker = 0;
     }
 
     void Update() {
-        markerTimer += Time.deltaTime;
-        if (markerTimer >= markerFrequency) {
-            markerTimer = 0;
+        if (distanceSinceLastMarker >= markerDropDistance) {
+            distanceSinceLastMarker = 0;
         }
 
         damageCooldownTimer += Time.deltaTime;
@@ -53,13 +54,13 @@ public class SnakeGrowthManager : MonoBehaviour
             if (i != 0) {
                 MarkerManager nextMarkerManagerInLine = bodySegments[i-1].GetComponent<MarkerManager>();
                 if (nextMarkerManagerInLine.GetMarkerCount() > 0) {
-                    bodySegments[i].transform.position = nextMarkerManagerInLine.GetLastMarkerInLine().position;
+                    bodySegments[i].transform.position = Vector3.MoveTowards(bodySegments[i].transform.position, nextMarkerManagerInLine.GetLastMarkerInLine().position, snakeMoveSpeed * Time.deltaTime); ;
                     bodySegments[i].transform.rotation = nextMarkerManagerInLine.GetLastMarkerInLine().rotation;
                 }
             }
-            if (markerTimer == 0) {
-                MarkerManager thisMarkerManager = bodySegments[i].GetComponent<MarkerManager>();
-                thisMarkerManager.AddMarker();
+            if (distanceSinceLastMarker == 0) {
+                MarkerManager currentMarkerManager = bodySegments[i].GetComponent<MarkerManager>();
+                currentMarkerManager.AddMarker();
             }
             
         }
@@ -101,9 +102,6 @@ public class SnakeGrowthManager : MonoBehaviour
         
     }
 
-    public void UpdateMarkerFrequency(float frequency) {
-        markerFrequency = frequency;
-    }
 
     public List<Vector3> DestroyAllBodySegments() {
         List<Vector3> positions = new List<Vector3>();;
@@ -116,5 +114,13 @@ public class SnakeGrowthManager : MonoBehaviour
     }
     public Vector3 GetLastBodySegmentPosition() {
         return bodySegments[bodySegments.Count - 1].transform.position;
+    }
+
+    public void AddDistanceTraveled(float distance) {
+        distanceSinceLastMarker += distance;
+    }
+
+    public void SetMoveSpeed(float moveSpeed) {
+        snakeMoveSpeed = moveSpeed;
     }
 }

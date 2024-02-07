@@ -30,9 +30,10 @@ public class MarkerManager : MonoBehaviour
             markers.Add(newMarker);
 
             #region debug
-            // if (showDebugTrail) {
-            //     testMarkers.Add(Instantiate(testMarker, newMarker.position, newMarker.rotation));
-            // }
+            if (showDebugTrail) {
+                testMarkers.Add(Instantiate(testMarker, newMarker.position, newMarker.rotation));
+                //Debug.DrawLine(newMarker.position, newMarker.position);
+            }
             #endregion
 
             // check if max marker count is exceeded. if yes, remove old ones
@@ -41,11 +42,11 @@ public class MarkerManager : MonoBehaviour
                 markers.RemoveRange(0, numberToRemove);
                 
                 #region debug
-                // if (showDebugTrail) {
-                //     List<GameObject> testRange = testMarkers.GetRange(0, numberToRemove);
-                //     testRange.ForEach(testMarker => Destroy(testMarker));
-                //     testMarkers.RemoveRange(0, numberToRemove);
-                // }
+                if (showDebugTrail) {
+                    List<GameObject> testRange = testMarkers.GetRange(0, numberToRemove);
+                    testRange.ForEach(testMarker => Destroy(testMarker));
+                    testMarkers.RemoveRange(0, numberToRemove);
+                }
                 #endregion
             }
         //}

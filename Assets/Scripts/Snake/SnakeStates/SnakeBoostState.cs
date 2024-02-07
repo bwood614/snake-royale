@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SnakeBoostState : SnakeBaseState
 {
-    public float moveSpeed = 400;
+    public float moveSpeed = 20;
     public float nuggetReleaseFrequency = 2f;
 
     IController controller;
@@ -21,7 +21,7 @@ public class SnakeBoostState : SnakeBaseState
         controller.Initialize();
 
         snakeGrowthManager = snake.GetComponent<SnakeGrowthManager>();
-        snakeGrowthManager.UpdateMarkerFrequency(.0025f);
+        snakeGrowthManager.SetMoveSpeed(moveSpeed);
 
         GameObject nuggetManagerObj = GameObject.FindGameObjectWithTag("Nugget Manager");
         nuggetManager =  nuggetManagerObj.GetComponent<NuggetManager>();
@@ -31,7 +31,6 @@ public class SnakeBoostState : SnakeBaseState
 
     public override void FixedUpdate(SnakeStateManager snake)
     {
-        snakeRB.AddRelativeForce(new Vector2(0, moveSpeed));
     }
 
     public override void OnCollisionEnter(SnakeStateManager snake, Collision2D collisionInfo)
@@ -56,6 +55,12 @@ public class SnakeBoostState : SnakeBaseState
 
     public override void UpdateState(SnakeStateManager snake)
     {
+        // move snake head forward
+        float travelDistanceThisFrame = moveSpeed * Time.deltaTime;
+        snake.transform.Translate(0, travelDistanceThisFrame, 0);
+        snakeGrowthManager.AddDistanceTraveled(travelDistanceThisFrame);
+
+        // update rotation and boost state based on player input
         controller.UpdateRotation(snake);
         controller.UpdateBoost(snake);
 

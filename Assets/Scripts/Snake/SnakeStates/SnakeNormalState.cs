@@ -9,7 +9,7 @@ using Unity.VisualScripting.FullSerializer;
 
 public class SnakeNormalState : SnakeBaseState
 {
-    public float moveSpeed = 200;
+    public float moveSpeed = 10;
 
     IController controller;
     SnakeGrowthManager snakeGrowthManager;
@@ -27,7 +27,7 @@ public class SnakeNormalState : SnakeBaseState
         controller.Initialize();
 
         snakeGrowthManager = snake.GetComponent<SnakeGrowthManager>();
-        snakeGrowthManager.UpdateMarkerFrequency(.005f);
+        snakeGrowthManager.SetMoveSpeed(moveSpeed);
 
         GameObject nuggetManagerObj = GameObject.FindGameObjectWithTag("Nugget Manager");
         nuggetManager =  nuggetManagerObj.GetComponent<NuggetManager>();
@@ -40,7 +40,6 @@ public class SnakeNormalState : SnakeBaseState
 
     public override void FixedUpdate(SnakeStateManager snake)
     {
-        snakeRB.AddRelativeForce(new Vector2(0, moveSpeed));
     }
 
     public override void OnCollisionEnter(SnakeStateManager snake, Collision2D collisionInfo)
@@ -54,13 +53,15 @@ public class SnakeNormalState : SnakeBaseState
     public override void OnTriggerEnter(SnakeStateManager snake, Collider2D collisionInfo)
     {
         if (collisionInfo.gameObject.tag == "Body Segment" && collisionInfo.gameObject.transform.parent != snake.transform.parent) {
-            //snake.SwitchState(snake.snakeDeadState);
             snakeGrowthManager.DescreaseLength();
         }
     }
 
     public override void UpdateState(SnakeStateManager snake)
     {
+        float travelDistanceThisFrame = moveSpeed * Time.deltaTime;
+        snake.transform.Translate(0, travelDistanceThisFrame, 0);
+        snakeGrowthManager.AddDistanceTraveled(travelDistanceThisFrame);
         controller.UpdateRotation(snake);
         controller.UpdateBoost(snake);
 
