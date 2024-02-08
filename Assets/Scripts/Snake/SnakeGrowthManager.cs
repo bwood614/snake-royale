@@ -12,22 +12,21 @@ public class SnakeGrowthManager : MonoBehaviour
 
     // refs
     NuggetManager nuggetManager;
-    ScoreManager scoreManager;
+    //ScoreManager scoreManager;
 
 
     // state
     List<GameObject> bodySegments = new List<GameObject>();
     float damageCooldownTimer = 0;
     float damageCooldown = 2f;
-
-    float markerDropDistance = .5f;
+    float markerDropDistance = .5f; // this affects how often path markers are dropped. lower vals make smoother movement
     float distanceSinceLastMarker;
 
     float snakeMoveSpeed;
 
     void Start()
     {
-        scoreManager = GetComponent<ScoreManager>();
+        //scoreManager = GetComponent<ScoreManager>();
 
         gameObject.GetComponent<MarkerManager>().SetMaxMarkerCount(maxMarkersPerSegment);
         bodySegments.Add(gameObject);
@@ -53,16 +52,35 @@ public class SnakeGrowthManager : MonoBehaviour
         for (int i = 0; i < bodySegments.Count; i++) {
             if (i != 0) {
                 MarkerManager nextMarkerManagerInLine = bodySegments[i-1].GetComponent<MarkerManager>();
+
                 if (nextMarkerManagerInLine.GetMarkerCount() > 0) {
-                    bodySegments[i].transform.position = Vector3.MoveTowards(bodySegments[i].transform.position, nextMarkerManagerInLine.GetLastMarkerInLine().position, snakeMoveSpeed * Time.deltaTime); ;
-                    bodySegments[i].transform.rotation = nextMarkerManagerInLine.GetLastMarkerInLine().rotation;
+                    Vector3 currentPostion = bodySegments[i].transform.position;
+                    Vector3 nextPosition = nextMarkerManagerInLine.GetLastMarkerInLine().position;
+
+                    Quaternion currentRotation = bodySegments[i].transform.rotation;
+                    Quaternion nextRotation = nextMarkerManagerInLine.GetLastMarkerInLine().rotation;
+
+                
+                    // update transform position
+                    //bodySegments[i].transform.position = Vector3.MoveTowards(currentPostion, nextPosition, snakeMoveSpeed * Time.deltaTime);
+                    bodySegments[i].transform.position = nextPosition;
+                    //update transform rotation
+                    // 180 - abs(abs(a1 - a2) - 180); 
+                    // float angleDifference = 180 - Mathf.Abs(Mathf.Abs(nextRotation.eulerAngles.z - currentRotation.eulerAngles.z) - 180);
+                    // float maxDegreesDelta = angleDifference * snakeMoveSpeed * Time.deltaTime / (markerDropDistance - distanceSinceLastMarker);
+                    // Debug.Log(maxDegreesDelta);
+                    // bodySegments[i].transform.rotation = Quaternion.RotateTowards(currentRotation, nextRotation, maxDegreesDelta);
+                    bodySegments[i].transform.rotation = nextRotation;
                 }
             }
-            if (distanceSinceLastMarker == 0) {
+            
+            
+        }
+        if (distanceSinceLastMarker == 0) {
+            for (int i = 0; i < bodySegments.Count; i++) {
                 MarkerManager currentMarkerManager = bodySegments[i].GetComponent<MarkerManager>();
                 currentMarkerManager.AddMarker();
             }
-            
         }
     }
 
@@ -80,9 +98,11 @@ public class SnakeGrowthManager : MonoBehaviour
         GameObject newBodySegment = Instantiate(bodySegmentPrefab, position, Quaternion.identity, transform.parent);
         newBodySegment.GetComponent<MarkerManager>().SetMaxMarkerCount(maxMarkersPerSegment);
         bodySegments.Add(newBodySegment);
+        
+        newBodySegment.GetComponent<SpriteRenderer>().sortingOrder = -1 * (bodySegments.Count - 1);
 
         // increase score
-        scoreManager.IncreaseScore();
+        //scoreManager.IncreaseScore();
     }
 
     public void DescreaseLength() {
@@ -97,7 +117,7 @@ public class SnakeGrowthManager : MonoBehaviour
             nuggetManager.AddNuggetAtPosition(GetLastBodySegmentPosition());
 
             // decreaseScore
-            scoreManager.DecreaseScore();
+            //scoreManager.DecreaseScore();
         }
         
     }

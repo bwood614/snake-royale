@@ -36,9 +36,9 @@ public class NuggetManager : MonoBehaviour
     void Update()
     {
         // only update the nugget spawn timer if there is not already a spawned nugget available for pickup
-        if (nuggetCount == 0) {
-            randomTimeUntilNextSpawn -= Time.deltaTime;
-        }
+
+        randomTimeUntilNextSpawn -= Time.deltaTime;
+
         
         // if the spawn timer runs out, spawn a nugget at at randomly chosen spawn point
         if (randomTimeUntilNextSpawn <= 0) {

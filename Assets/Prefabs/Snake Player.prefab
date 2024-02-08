@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 4383515642099417943}
   - component: {fileID: 7912631515059128421}
   - component: {fileID: 5010071619647479578}
-  - component: {fileID: 6478138551660383002}
   m_Layer: 0
   m_Name: Snake Head 1
   m_TagString: Player
@@ -33,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 2589705866862046163}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: -0.4, z: 0}
+  m_LocalPosition: {x: 8.9, y: -0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -81,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.64705884, g: 0.3137255, b: 0.21568628, a: 1}
+  m_Color: {r: 0.32544324, g: 0.64705884, b: 0.21568626, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -116,7 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useController: 0
-  turnSpeed: 500
+  turnSpeed: 1000
 --- !u!114 &3753159519692645776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodySegmentPrefab: {fileID: 47052194664986968, guid: 08f8b1445882ce345a45a94c66d2e039, type: 3}
-  maxMarkersPerSegment: 15
+  maxMarkersPerSegment: 2
 --- !u!114 &4383515642099417943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showDebugTrail: 0
-  testMarker: {fileID: 2606678631148492310, guid: 99b32988d63d53e4bbb8166803a8dec0, type: 3}
+  testMarker: {fileID: 4857042037756384576, guid: 48d830e2486327f49b3327721b9814d6, type: 3}
 --- !u!50 &7912631515059128421
 Rigidbody2D:
   serializedVersion: 4
@@ -207,19 +206,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &6478138551660383002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2589705866862046163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d3ca95101cd75c4bbd67bc4c58d9630, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scoreText: {fileID: 0}
 --- !u!1 &8333165274462974822
 GameObject:
   m_ObjectHideFlags: 0

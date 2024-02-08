@@ -46,7 +46,7 @@ public class SnakeBoostState : SnakeBaseState
     public override void OnTriggerEnter(SnakeStateManager snake, Collider2D collisionInfo)
     {
         if (collisionInfo.gameObject.tag == "Body Segment" && collisionInfo.gameObject.transform.parent != snake.transform.parent) {
-            snake.SwitchState(snake.snakeDeadState);
+            snakeGrowthManager.DescreaseLength();
         } else if (collisionInfo.gameObject.tag == "Death Wall") {
             // snake.SwitchState(snake.snakeDeadState);
             snakeGrowthManager.DescreaseLength();

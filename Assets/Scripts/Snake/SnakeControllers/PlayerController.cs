@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour, IController
         
     }
 
-    public void UpdateRotation(SnakeStateManager snake)
+        public void UpdateRotation(SnakeStateManager snake)
     {
         if (useController) {
             float horizonatalAxis = Input.GetAxis("Horizontal");
@@ -50,8 +50,6 @@ public class PlayerController : MonoBehaviour, IController
             float targetTravelAngleZ = (Mathf.Atan2(verticalAxis, horizonatalAxis)* Mathf.Rad2Deg) - 90;
             Quaternion targetTravelAngle = Quaternion.Euler(0, 0, targetTravelAngleZ);
             travelAngle = Quaternion.RotateTowards(travelAngle, targetTravelAngle, turnSpeed * Time.deltaTime);
-            snake.transform.rotation = travelAngle;
-            
         } else {
             // get mouse position and convert to world point
             mousePosition = Input.mousePosition;
@@ -64,10 +62,8 @@ public class PlayerController : MonoBehaviour, IController
 
             // lag actual travel angle behind mouse position. This prevents sharp turning
             travelAngle = Quaternion.RotateTowards(travelAngle, targetTravelAngle, turnSpeed * Time.deltaTime);
-            
-            // snake.transform.rotation = Quaternion.Euler(0, 0, 270 + travelAngle);
-            snake.transform.rotation = travelAngle;
         }
+        snake.transform.rotation = travelAngle;
     }
 
     public bool CheckForShoot() {
