@@ -475,7 +475,7 @@ PrefabInstance:
       objectReference: {fileID: 4857042037756384576, guid: 48d830e2486327f49b3327721b9814d6, type: 3}
     - target: {fileID: 4383515642099417943, guid: 3774fde1921da624b9cd2a2887a1be03, type: 3}
       propertyPath: showDebugTrail
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6478138551660383002, guid: 3774fde1921da624b9cd2a2887a1be03, type: 3}
       propertyPath: scoreText

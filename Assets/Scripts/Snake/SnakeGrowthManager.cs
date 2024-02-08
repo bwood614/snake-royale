@@ -8,19 +8,21 @@ public class SnakeGrowthManager : MonoBehaviour
 {
 
     public GameObject bodySegmentPrefab;
-    public int maxMarkersPerSegment;
+    public int markersPerSegment = 5;
+    public float markerDropDistance = 0.5f; // this affects how often path markers are dropped. lower vals make smoother movement
 
     // refs
     NuggetManager nuggetManager;
     //ScoreManager scoreManager;
-
+    MarkerManager snakeMarkerManager;
 
     // state
     List<GameObject> bodySegments = new List<GameObject>();
     float damageCooldownTimer = 0;
     float damageCooldown = 2f;
-    float markerDropDistance = .5f; // this affects how often path markers are dropped. lower vals make smoother movement
+    
     float distanceSinceLastMarker;
+    
 
     float snakeMoveSpeed;
 
@@ -28,60 +30,62 @@ public class SnakeGrowthManager : MonoBehaviour
     {
         //scoreManager = GetComponent<ScoreManager>();
 
-        gameObject.GetComponent<MarkerManager>().SetMaxMarkerCount(maxMarkersPerSegment);
-        bodySegments.Add(gameObject);
-        for (int i = 1; i <=5; i++) {
-            IncreaseLength();
-        }
-
         GameObject nuggetManagerObj = GameObject.FindGameObjectWithTag("Nugget Manager");
         nuggetManager =  nuggetManagerObj.GetComponent<NuggetManager>();
+
+        snakeMarkerManager = gameObject.GetComponent<MarkerManager>();
+        snakeMarkerManager.SetMaxMarkerCount(markersPerSegment);
+
+        //  for (int i = 1; i <=5; i++) {
+        //     IncreaseLength();
+        // }
 
         distanceSinceLastMarker = 0;
     }
 
     void Update() {
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            IncreaseLength();
+        }
+
         if (distanceSinceLastMarker >= markerDropDistance) {
+            snakeMarkerManager.AddMarker();
             distanceSinceLastMarker = 0;
+
         }
 
         damageCooldownTimer += Time.deltaTime;
         
 
-        // update body segment positions and rotations and Add new markers
+        // update body segment positions and rotations
         for (int i = 0; i < bodySegments.Count; i++) {
-            if (i != 0) {
-                MarkerManager nextMarkerManagerInLine = bodySegments[i-1].GetComponent<MarkerManager>();
-
-                if (nextMarkerManagerInLine.GetMarkerCount() > 0) {
-                    Vector3 currentPostion = bodySegments[i].transform.position;
-                    Vector3 nextPosition = nextMarkerManagerInLine.GetLastMarkerInLine().position;
-
-                    Quaternion currentRotation = bodySegments[i].transform.rotation;
-                    Quaternion nextRotation = nextMarkerManagerInLine.GetLastMarkerInLine().rotation;
-
-                
-                    // update transform position
-                    //bodySegments[i].transform.position = Vector3.MoveTowards(currentPostion, nextPosition, snakeMoveSpeed * Time.deltaTime);
-                    bodySegments[i].transform.position = nextPosition;
-                    //update transform rotation
-                    // 180 - abs(abs(a1 - a2) - 180); 
-                    // float angleDifference = 180 - Mathf.Abs(Mathf.Abs(nextRotation.eulerAngles.z - currentRotation.eulerAngles.z) - 180);
-                    // float maxDegreesDelta = angleDifference * snakeMoveSpeed * Time.deltaTime / (markerDropDistance - distanceSinceLastMarker);
-                    // Debug.Log(maxDegreesDelta);
-                    // bodySegments[i].transform.rotation = Quaternion.RotateTowards(currentRotation, nextRotation, maxDegreesDelta);
-                    bodySegments[i].transform.rotation = nextRotation;
-                }
+            int markerCount = snakeMarkerManager.GetMarkerCount();
+            if (markerCount <= 0) {
+                break;
             }
-            
-            
+
+            int nextMarkerIndex = markerCount - ((i + 1) * markersPerSegment);
+            // if the length increases in rapid succession, it is possible to get negative index. Set index to 0 if negative
+            nextMarkerIndex = nextMarkerIndex < 0 ? 0 : nextMarkerIndex;
+            MarkerManager.Marker nextMarker = snakeMarkerManager.GetMarkerAt(nextMarkerIndex);
+
+            Vector3 currentPostion = bodySegments[i].transform.position;
+            Vector3 nextPosition = nextMarker.position;
+
+            Quaternion currentRotation = bodySegments[i].transform.rotation;
+            Quaternion nextRotation = nextMarker.rotation;
+
+        
+            // update transform position
+            bodySegments[i].transform.position = Vector3.MoveTowards(currentPostion, nextPosition, snakeMoveSpeed * Time.deltaTime);
+
+            //update transform rotation
+            // distance between 2 angles = 180 - abs(abs(a1 - a2) - 180); 
+            float angleDifference = 180 - Mathf.Abs(Mathf.Abs(nextRotation.eulerAngles.z - currentRotation.eulerAngles.z) - 180);
+            float maxDegreesDelta = angleDifference * snakeMoveSpeed * Time.deltaTime / (markerDropDistance - distanceSinceLastMarker);
+            bodySegments[i].transform.rotation = Quaternion.RotateTowards(currentRotation, nextRotation, maxDegreesDelta);
         }
-        if (distanceSinceLastMarker == 0) {
-            for (int i = 0; i < bodySegments.Count; i++) {
-                MarkerManager currentMarkerManager = bodySegments[i].GetComponent<MarkerManager>();
-                currentMarkerManager.AddMarker();
-            }
-        }
+        
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -94,10 +98,12 @@ public class SnakeGrowthManager : MonoBehaviour
 
     private void IncreaseLength()
     {
-        Vector3 position = bodySegments[bodySegments.Count - 1].transform.position;
+        
+        Vector3 position = snakeMarkerManager.GetLastMarkerInLine().position;
         GameObject newBodySegment = Instantiate(bodySegmentPrefab, position, Quaternion.identity, transform.parent);
-        newBodySegment.GetComponent<MarkerManager>().SetMaxMarkerCount(maxMarkersPerSegment);
         bodySegments.Add(newBodySegment);
+        snakeMarkerManager.SetMaxMarkerCount((bodySegments.Count + 1) * markersPerSegment);
+        
         
         newBodySegment.GetComponent<SpriteRenderer>().sortingOrder = -1 * (bodySegments.Count - 1);
 

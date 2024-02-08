@@ -20,7 +20,7 @@ public class MarkerManager : MonoBehaviour
 
     // state
     List<Marker> markers = new List<Marker>();
-    int maxMarkerCount;
+    int maxMarkerCount = 0;
     
     List<GameObject> testMarkers = new List<GameObject>();
 
@@ -29,25 +29,24 @@ public class MarkerManager : MonoBehaviour
             Marker newMarker = new Marker(transform.position, transform.rotation);
             markers.Add(newMarker);
 
-            #region debug
             if (showDebugTrail) {
                 testMarkers.Add(Instantiate(testMarker, newMarker.position, newMarker.rotation));
                 //Debug.DrawLine(newMarker.position, newMarker.position);
             }
-            #endregion
+
 
             // check if max marker count is exceeded. if yes, remove old ones
             if (markers.Count >= maxMarkerCount) {
                 int numberToRemove = markers.Count - maxMarkerCount;
                 markers.RemoveRange(0, numberToRemove);
                 
-                #region debug
+
                 if (showDebugTrail) {
                     List<GameObject> testRange = testMarkers.GetRange(0, numberToRemove);
                     testRange.ForEach(testMarker => Destroy(testMarker));
                     testMarkers.RemoveRange(0, numberToRemove);
                 }
-                #endregion
+
             }
         //}
     }
@@ -62,5 +61,9 @@ public class MarkerManager : MonoBehaviour
 
     public void SetMaxMarkerCount(int max) {
         maxMarkerCount = max;
+    }
+
+    public Marker GetMarkerAt(int index) {
+        return markers[index];
     }
 }

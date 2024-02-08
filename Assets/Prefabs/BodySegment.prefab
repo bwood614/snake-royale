@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2980471276266407786}
   - component: {fileID: 2039656297660221488}
-  - component: {fileID: -4714662770180776827}
   - component: {fileID: -9003131355755111098}
   m_Layer: 0
   m_Name: BodySegment
@@ -86,20 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-4714662770180776827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 47052194664986968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7be44193bf3b986489c2a17432dcdc59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showDebugTrail: 1
-  testMarker: {fileID: 4857042037756384576, guid: 48d830e2486327f49b3327721b9814d6, type: 3}
 --- !u!58 &-9003131355755111098
 CircleCollider2D:
   m_ObjectHideFlags: 0
