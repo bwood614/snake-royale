@@ -20,9 +20,9 @@ public class SnakeGrowthManager : MonoBehaviour
     List<GameObject> bodySegments = new List<GameObject>();
     float damageCooldownTimer = 0;
     float damageCooldown = 2f;
-    
+
     float distanceSinceLastMarker;
-    
+
 
     float snakeMoveSpeed;
 
@@ -31,23 +31,19 @@ public class SnakeGrowthManager : MonoBehaviour
         //scoreManager = GetComponent<ScoreManager>();
 
         GameObject nuggetManagerObj = GameObject.FindGameObjectWithTag("Nugget Manager");
-        nuggetManager =  nuggetManagerObj.GetComponent<NuggetManager>();
+        nuggetManager = nuggetManagerObj.GetComponent<NuggetManager>();
 
         snakeMarkerManager = gameObject.GetComponent<MarkerManager>();
         snakeMarkerManager.SetMaxMarkerCount(markersPerSegment);
 
-        //  for (int i = 1; i <=5; i++) {
-        //     IncreaseLength();
-        // }
+        for (int i = 1; i <= 5; i++) {
+            IncreaseLength();
+        }
 
         distanceSinceLastMarker = 0;
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            IncreaseLength();
-        }
-
         if (distanceSinceLastMarker >= markerDropDistance) {
             snakeMarkerManager.AddMarker();
             distanceSinceLastMarker = 0;
@@ -55,7 +51,7 @@ public class SnakeGrowthManager : MonoBehaviour
         }
 
         damageCooldownTimer += Time.deltaTime;
-        
+
 
         // update body segment positions and rotations
         for (int i = 0; i < bodySegments.Count; i++) {
@@ -75,7 +71,7 @@ public class SnakeGrowthManager : MonoBehaviour
             Quaternion currentRotation = bodySegments[i].transform.rotation;
             Quaternion nextRotation = nextMarker.rotation;
 
-        
+
             // update transform position
             bodySegments[i].transform.position = Vector3.MoveTowards(currentPostion, nextPosition, snakeMoveSpeed * Time.deltaTime);
 
@@ -85,7 +81,7 @@ public class SnakeGrowthManager : MonoBehaviour
             float maxDegreesDelta = angleDifference * snakeMoveSpeed * Time.deltaTime / (markerDropDistance - distanceSinceLastMarker);
             bodySegments[i].transform.rotation = Quaternion.RotateTowards(currentRotation, nextRotation, maxDegreesDelta);
         }
-        
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -98,13 +94,18 @@ public class SnakeGrowthManager : MonoBehaviour
 
     private void IncreaseLength()
     {
-        
-        Vector3 position = snakeMarkerManager.GetLastMarkerInLine().position;
+        Vector3 position;
+        if (snakeMarkerManager.GetMarkerCount() > 0) {
+            position = snakeMarkerManager.GetLastMarkerInLine().position;
+        }
+        else {
+            position = transform.position;
+        }
         GameObject newBodySegment = Instantiate(bodySegmentPrefab, position, Quaternion.identity, transform.parent);
         bodySegments.Add(newBodySegment);
         snakeMarkerManager.SetMaxMarkerCount((bodySegments.Count + 1) * markersPerSegment);
-        
-        
+
+
         newBodySegment.GetComponent<SpriteRenderer>().sortingOrder = -1 * (bodySegments.Count - 1);
 
         // increase score
@@ -125,12 +126,12 @@ public class SnakeGrowthManager : MonoBehaviour
             // decreaseScore
             //scoreManager.DecreaseScore();
         }
-        
+
     }
 
 
     public List<Vector3> DestroyAllBodySegments() {
-        List<Vector3> positions = new List<Vector3>();;
+        List<Vector3> positions = new List<Vector3>();
         for (int i = bodySegments.Count - 1; i >= 0; i--) {
             positions.Add(bodySegments[i].transform.position);
             Destroy(bodySegments[i]);

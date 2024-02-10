@@ -59,10 +59,10 @@ public class SnakeNormalState : SnakeBaseState
 
     public override void UpdateState(SnakeStateManager snake)
     {
-        float travelDistanceThisFrame = moveSpeed * Time.deltaTime;
-        snake.transform.Translate(0, travelDistanceThisFrame, 0);
-        snakeGrowthManager.AddDistanceTraveled(travelDistanceThisFrame);
-        controller.UpdateRotation(snake);
+                    float travelDistanceThisFrame = moveSpeed * Time.deltaTime;
+            snake.transform.Translate(0, travelDistanceThisFrame, 0);
+            snakeGrowthManager.AddDistanceTraveled(travelDistanceThisFrame);
+                controller.UpdateRotation(snake);
         controller.UpdateBoost(snake);
 
         if (controller.CheckForShoot()) {

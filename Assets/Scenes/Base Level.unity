@@ -466,6 +466,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3753159519692645776, guid: 3774fde1921da624b9cd2a2887a1be03, type: 3}
+      propertyPath: markersPerSegment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3753159519692645776, guid: 3774fde1921da624b9cd2a2887a1be03, type: 3}
       propertyPath: maxMarkersPerSegment
       value: 10
       objectReference: {fileID: 0}

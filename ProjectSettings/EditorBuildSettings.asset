@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Sandbox.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Couch Play.unity
     guid: aa7ed8b6f042f794887dd08b7bd4cc21
+  - enabled: 1
+    path: Assets/Scenes/Base Level.unity
+    guid: 6e48eed59a7e39842bb09fa0effb3946
   m_configObjects: {}
